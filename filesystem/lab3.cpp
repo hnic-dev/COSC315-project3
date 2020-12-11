@@ -2,12 +2,10 @@
 #include <fstream>
 #include <string>
 using namespace std;
-typedef int int32;
-//typedef char byte;
 
 class myFileSystem {
 public:
-  int create(char *name, int32 size);
+  int create(char *name, int size);
   int del(char *name);
   void ls();
   int read(char *name, int blockNum, char *buf);
@@ -175,6 +173,18 @@ int myFileSystem::read(char *name, int blockNum, char *buf) {
    // blockNum does not exceed size-1.
 
    // Step 1: Locate the inode for this file as in Step 1 of delete.
+  string file = name;
+  int file_index = 16;
+  for (int i=0; i<16; i++) {
+    if (file == std::to_string(inodes[i].name)) {
+      file_index = i;
+      break;
+    }
+  }
+  if (file_index == 16) {
+    cout << "File does not exist" << endl;
+    return 0;
+  }
 
    // Step 2: Seek to blockPointers[blockNum] and read the block
    // from disk to buf.
@@ -188,6 +198,18 @@ int myFileSystem::write(char *name, int blockNum, char *buf) {
    // Return an error if and when appropriate.
 
    // Step 1: Locate the inode for this file as in Step 1 of delete.
+  string file = name;
+  int file_index = 16;
+  for (int i=0; i<16; i++) {
+    if (file == std::to_string(inodes[i].name)) {
+      file_index = i;
+      break;
+    }
+  }
+  if (file_index == 16) {
+    cout << "File does not exist" << endl;
+    return 0;
+  }
 
    // Step 2: Seek to blockPointers[blockNum] and write buf to disk.
    
@@ -195,7 +217,37 @@ int myFileSystem::write(char *name, int blockNum, char *buf) {
 
 
 int main(int argc, char** argv) {
-  myFileSystem fs("disk0");
-  char t = 't';
-  fs.create((char*)&t, 8);
+  ifstream input(argv[1]);
+  char buf[1024];
+  string diskname, filename, command;
+  int n;
+  input >> diskname;
+  myFileSystem fs(diskname);
+  while(!input.eof()) {
+    input >> command;
+    if (command == "L") {
+      fs.ls();
+      continue;
+    }
+    input >> filename;
+    if(command == "D") {
+      fs.del((char*)&filename);
+      continue;
+    }
+    input >> n;
+    if(command == "C") {
+      fs.create((char*)&filename, n);
+    }
+    else if(command == "W") {
+      fs.write((char*)&filename, n, buf);
+    }
+    else if(command == "R") {
+      fs.read((char*)&filename, n, buf);
+    }
+   }
+   input.close();
+
+  //myFileSystem fs("disk0");
+  //char t = 't';
+  //fs.create((char*)&t, 8);
 }
