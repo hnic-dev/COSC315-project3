@@ -1,0 +1,9 @@
+virtual address 5000 is in page number 19 and offset 136
+virtual address 22000 is in page number 85 and offset 240
+virtual address 30043 is in page number 117 and offset 91
+virtual address 25467 is in page number 99 and offset 123
+virtual address 1238 is in page number 4 and offset 214
+virtual address 34 is in page number 0 and offset 34
+virtual address 9874 is in page number 38 and offset 146
+virtual address 15426 is in page number 60 and offset 66
+virtual address 3752 is in page number 14 and offset 168
